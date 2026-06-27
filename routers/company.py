@@ -27,11 +27,3 @@ def update_company(company_id:int,company:CompanyUpdate):
 def delete_company(company_id:int):
     companies.pop(company_id)
     return companies
-
-# @router.get("/")
-# def read_company():
-#     return {"company":"Company root"}
-
-# @router.get("/{company_id}")
-# def read_company(company_id: int):
-#     return {"company_id":company_id}
