@@ -24,11 +24,22 @@ function App() {
       setLoading(false);
     }
   }
+  useEffect(() => {
+    fetchCompanies();
+  }, []);
+
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (error) {
+    return <div>Error: {error.message}</div>;
+  }
   return (
     <div>
       <Navbar />
-      <Welcome />
-      <CompanyCard key={companies.id} companies={companies} />
+      <Welcome /> <br />
+      <CompanyCard companies={companies} />
       <JobCard />
       <Footer />
     </div>
