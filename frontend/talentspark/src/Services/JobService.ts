@@ -1,6 +1,5 @@
 import axios from "axios";
 import type {Job} from "../types/job";
-import type { Company } from "../types/company";
 
 const API_BASE_URL = "http://localhost:8000";
 
