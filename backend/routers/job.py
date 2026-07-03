@@ -1,3 +1,4 @@
+from utils.oauth2 import get_current_user, role_required
 from fastapi import APIRouter,HTTPException,Depends,status
 from schemas.job import JobCreate,JobUpdate,JobResponse
 from models import company,job
@@ -9,7 +10,7 @@ from database import get_db,SessionLocal
 router=APIRouter(prefix="/job",tags=["job"])
 
 @router.post("/",status_code=status.HTTP_201_CREATED)
-def create_job(job:JobCreate, db:Session=Depends(get_db)):
+def create_job(job:JobCreate, db:Session=Depends(get_db), current_user=Depends(role_required(["admin","hr"]))):
     if job.company_id <= 0:
         raise HTTPException(status_code=400, detail="company_id must be greater than 0")
 
@@ -24,19 +25,19 @@ def create_job(job:JobCreate, db:Session=Depends(get_db)):
     return db_job
 
 @router.get("/",status_code=status.HTTP_200_OK, response_model=list[JobResponse])
-def get_all_jobs(db:Session=Depends(get_db)):
+def get_all_jobs(db:Session=Depends(get_db), current_user=Depends(get_current_user)):
     jobs=db.query(Job).all()    
     return jobs
 
 @router.get("/{job_id}",status_code=status.HTTP_200_OK, response_model=JobResponse)
-def get_job(job_id:int, db:Session=Depends(get_db)):
+def get_job(job_id:int, db:Session=Depends(get_db), current_user=Depends(get_current_user)):
     job = db.query(Job).filter(Job.id == job_id).first()
     if not job:
         raise HTTPException(status_code=404, detail="Job not found")
     return job
 
 @router.put("/{job_id}",status_code=status.HTTP_200_OK, response_model=JobResponse)
-def update_job(job_id:int, job:JobUpdate, db:Session=Depends(get_db)):
+def update_job(job_id:int, job:JobUpdate, db:Session=Depends(get_db), current_user=Depends(role_required(["admin","hr"]))):
     db_job = db.query(Job).filter(Job.id == job_id).first()
     if not db_job:
         raise HTTPException(status_code=404, detail="Job not found")
@@ -59,7 +60,7 @@ def update_job(job_id:int, job:JobUpdate, db:Session=Depends(get_db)):
     return db_job
 
 @router.delete("/{job_id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_job(job_id:int, db:Session=Depends(get_db)):
+def delete_job(job_id:int, db:Session=Depends(get_db), current_user=Depends(role_required(["admin","hr"]))):
     db_job = db.query(Job).filter(Job.id == job_id).first()
     if not db_job:
         raise HTTPException(status_code=404, detail="Job not found")
