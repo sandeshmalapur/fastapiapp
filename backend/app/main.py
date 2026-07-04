@@ -1,9 +1,9 @@
-from routers import auth
 from fastapi import FastAPI
-from routers import company,job
-from database import Base,engine
-from models import company as company_model,job as job_model, users as user_model
 from fastapi.middleware.cors import CORSMiddleware
+
+from database import Base, engine
+from models import company as company_model, job as job_model, users as user_model
+from routers import auth, chat, company, job
 
 app=FastAPI()
 app.add_middleware(
@@ -14,8 +14,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 print("engine is",engine)
-# Base.metadata.create_all(bind=engine)
 app.include_router(auth.router)
+app.include_router(chat.router)
 app.include_router(company.router)
 app.include_router(job.router)
 
@@ -31,8 +31,3 @@ def read_about():
 def contact():
     return {"contact":"This is contact page"}
 
-#crud operationns
-#put
-#post
-#get
-#delete
