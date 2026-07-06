@@ -8,7 +8,7 @@ from database import get_db,SessionLocal
 
 router=APIRouter(prefix="/company",tags=["company"])
 
-@router.post("/",status_code=status.HTTP_201_CREATED)
+@router.post("/",status_code=status.HTTP_201_CREATED, response_model=CompanyResponse)
 def create_company(company:CompanyCreate, db:Session=Depends(get_db), current_user=Depends(role_required(["admin"]))):
     db_company=Company(**company.dict())
     db.add(db_company)
