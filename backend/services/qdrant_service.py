@@ -12,8 +12,8 @@ COLLECTION_NAME = "job_descriptions"
 VECTOR_SIZE =384
 
 qdrant = QdrantClient(
-    url = os.getenv("QRANT_URL"),
-    api_key = os.getenv("QRANT_API_KEY")
+    url = os.getenv("QDRANT_URL"),
+    api_key = os.getenv("QDRANT_API_KEY")
 )
 
 embeddings_model = TextEmbedding("BAAI/bge-small-en-v1.5")
@@ -22,7 +22,7 @@ def ensure_collection():
     collections=[c.name for c in qdrant.get_collections().collections]
     if COLLECTION_NAME in collections:
         info = qdrant.get_collection(COLLECTION_NAME)
-        existing_size = info.config.params.vector.size
+        existing_size = info.config.params.vectors.size
         if existing_size != VECTOR_SIZE:
             qdrant.delete_collection(COLLECTION_NAME)
             collections.remove(COLLECTION_NAME)

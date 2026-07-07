@@ -8,6 +8,8 @@ import Login from "./pages/login";
 import {useEffect,useState} from "react";
 import { getCompanies,updateCompany,deleteCompany,createCompany } from "./Services/CompanyService";
 import type {Company} from "./types/company"
+import ResumeAnalyser from "./pages/ResumeAnalyser";
+import JobMatch from "./pages/JobMatch";
 
 function App(){
   const [loading,setLoading] = useState(true);
@@ -71,7 +73,6 @@ function App(){
     }
   }
 
-
   useEffect(() => {
     if (!isAuthenticated) {
       setLoading(false);
@@ -108,8 +109,11 @@ function App(){
     onadd={handleAdd}
     />
     <JobCard />
+    <JobMatch />
     <Chatbot />
+    <ResumeAnalyser/>
     <Footer />
+
     </>
   )
 }

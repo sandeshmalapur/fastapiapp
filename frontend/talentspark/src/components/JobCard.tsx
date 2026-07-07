@@ -55,7 +55,6 @@ function JobCard() {
 
     const handleSave = async () => {
         if (editJobId === null) return;
-
         try {
             const updatedJob = await updateJob(editJobId, editForm);
             setJobs((prev) => prev.map((job) => (job.id === updatedJob.id ? updatedJob : job)));
@@ -89,58 +88,62 @@ function JobCard() {
     };
 
     if (loading) {
-        return <div className="job-card">Loading jobs...</div>;
+        return <div className="page-container"><p className="small-text">Loading jobs...</p></div>;
     }
 
     return (
-        <div className="job-card">
-            <h2 className="card-title">Available Jobs</h2>
-            <p className="card-subtitle">Create, edit, and remove jobs from the backend</p>
-
-            {error ? <p className="small-text" style={{ color: "#dc2626" }}>{error}</p> : null}
-
-            <div style={{ marginBottom: "1rem" }}>
-                <h3>Add Job</h3>
-                <input type="text" value={addForm.title} onChange={(e) => setAddForm({ ...addForm, title: e.target.value })} placeholder="Title" />
-                <input type="text" value={addForm.description} onChange={(e) => setAddForm({ ...addForm, description: e.target.value })} placeholder="Description" />
-                <input type="text" value={addForm.location} onChange={(e) => setAddForm({ ...addForm, location: e.target.value })} placeholder="Location" />
-                <input type="number" value={addForm.salary} onChange={(e) => setAddForm({ ...addForm, salary: Number(e.target.value) })} placeholder="Salary" />
-                <input type="number" value={addForm.company_id} onChange={(e) => setAddForm({ ...addForm, company_id: Number(e.target.value) })} placeholder="Company ID" />
-                <button onClick={handleAdd}>Add</button>
-            </div>
+        <div className="job-container">
+            {error ? <p className="small-text error-text">{error}</p> : null}
 
             {jobs.length === 0 ? (
                 <p className="small-text">No jobs found right now.</p>
             ) : (
                 jobs.map((job) => (
-                    <div key={job.id} style={{ padding: "0.75rem 0", borderTop: "1px solid #e5e7eb" }}>
+                    <div key={job.id} className="job-card">
                         {editJobId === job.id ? (
-                            <>
+                            <div className="job-form">
                                 <input type="text" value={editForm.title} onChange={(e) => setEditForm({ ...editForm, title: e.target.value })} placeholder="Title" />
                                 <input type="text" value={editForm.description} onChange={(e) => setEditForm({ ...editForm, description: e.target.value })} placeholder="Description" />
                                 <input type="text" value={editForm.location} onChange={(e) => setEditForm({ ...editForm, location: e.target.value })} placeholder="Location" />
                                 <input type="number" value={editForm.salary} onChange={(e) => setEditForm({ ...editForm, salary: Number(e.target.value) })} placeholder="Salary" />
                                 <input type="number" value={editForm.company_id} onChange={(e) => setEditForm({ ...editForm, company_id: Number(e.target.value) })} placeholder="Company ID" />
-                                <button onClick={handleSave}>Save</button>
-                                <button onClick={() => { setEditJobId(null); resetEditForm(); }}>Cancel</button>
-                            </>
+                                <div className="job-actions">
+                                    <button onClick={handleSave}>Save</button>
+                                    <button onClick={() => { setEditJobId(null); resetEditForm(); }}>Cancel</button>
+                                </div>
+                            </div>
                         ) : (
-                            <>
-                                <h3>{job.title}</h3>
-                                <p className="small-text">{job.description}</p>
-                                <p><strong>Location:</strong> {job.location}</p>
-                                <p><strong>Salary:</strong> {job.salary}</p>
-                                <p><strong>Company ID:</strong> {job.company_id}</p>
-                            </>
+                            <div>
+                                <h2>{job.title}</h2>
+                                <p>{job.description}</p>
+                                <div className="skills">
+                                    <span className="skill">{job.location}</span>
+                                    <span className="skill">₹{job.salary}</span>
+                                </div>
+                            </div>
                         )}
 
-                        <button onClick={() => (editJobId === job.id ? (setEditJobId(null), resetEditForm()) : startEdit(job))}>
-                            {editJobId === job.id ? "Cancel" : "Edit"}
-                        </button>
-                        <button onClick={() => void handleDelete(job.id)}>Delete</button>
+                        <div className="job-actions">
+                            <button onClick={() => (editJobId === job.id ? (setEditJobId(null), resetEditForm()) : startEdit(job))}>
+                                {editJobId === job.id ? "Cancel" : "Edit"}
+                            </button>
+                            <button className="delete-btn" onClick={() => void handleDelete(job.id)}>Delete</button>
+                        </div>
                     </div>
                 ))
             )}
+
+            <div className="card add-company-card">
+                <h2>Add Job</h2>
+                <div className="job-form">
+                    <input type="text" value={addForm.title} onChange={(e) => setAddForm({ ...addForm, title: e.target.value })} placeholder="Title" />
+                    <input type="text" value={addForm.description} onChange={(e) => setAddForm({ ...addForm, description: e.target.value })} placeholder="Description" />
+                    <input type="text" value={addForm.location} onChange={(e) => setAddForm({ ...addForm, location: e.target.value })} placeholder="Location" />
+                    <input type="number" value={addForm.salary} onChange={(e) => setAddForm({ ...addForm, salary: Number(e.target.value) })} placeholder="Salary" />
+                    <input type="number" value={addForm.company_id} onChange={(e) => setAddForm({ ...addForm, company_id: Number(e.target.value) })} placeholder="Company ID" />
+                    <button onClick={handleAdd}>Add Job</button>
+                </div>
+            </div>
         </div>
     );
 }

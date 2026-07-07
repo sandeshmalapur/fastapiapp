@@ -45,34 +45,29 @@ function Chatbot() {
     };
 
     return (
-        <div style={{ maxWidth: "720px", margin: "2rem auto", padding: "1rem", border: "1px solid #e5e7eb", borderRadius: "12px", background: "#fff" }}>
-            <h2 style={{ marginBottom: "0.5rem" }}>AI Assistant</h2>
-            <p style={{ marginTop: 0, color: "#6b7280" }}>Ask about jobs, companies, or hiring.</p>
+        <div className="chatbot">
+            <h2 className="chatbot-title">AI Assistant</h2>
+            <p className="chatbot-subtitle">Ask about jobs, companies, or hiring.</p>
 
-            <div style={{ minHeight: "220px", maxHeight: "320px", overflowY: "auto", padding: "0.75rem", border: "1px solid #f3f4f6", borderRadius: "10px", background: "#fafafa" }}>
+            <div className="chatbot-window">
                 {messages.map((message) => (
-                    <div key={message.id} style={{ marginBottom: "0.7rem", display: "flex", justifyContent: message.sender === "user" ? "flex-end" : "flex-start" }}>
-                        <div style={{ maxWidth: "80%", padding: "0.7rem 0.9rem", borderRadius: "12px", background: message.sender === "user" ? "#2563eb" : "#e5e7eb", color: message.sender === "user" ? "#fff" : "#111827" }}>
-                            {message.text}
-                        </div>
+                    <div key={message.id} className={`chatbot-row ${message.sender}`}>
+                        <div className={`chatbot-bubble ${message.sender}`}>{message.text}</div>
                     </div>
                 ))}
-                {loading ? <div style={{ color: "#6b7280" }}>Thinking...</div> : null}
+                {loading ? <div className="chatbot-thinking">Thinking...</div> : null}
             </div>
 
-            <div style={{ display: "flex", gap: "0.5rem", marginTop: "0.75rem" }}>
+            <div className="chatbot-input-row">
                 <input
                     value={input}
                     onChange={(e) => setInput(e.target.value)}
                     onKeyDown={(e) => {
-                        if (e.key === "Enter") {
-                            void handleSend();
-                        }
+                        if (e.key === "Enter") void handleSend();
                     }}
                     placeholder="Type your message..."
-                    style={{ flex: 1, padding: "0.7rem", borderRadius: "8px", border: "1px solid #d1d5db" }}
                 />
-                <button onClick={() => void handleSend()} style={{ padding: "0.7rem 1rem", borderRadius: "8px", border: "none", background: "#2563eb", color: "#fff", cursor: "pointer" }}>
+                <button className="chatbot-send" onClick={() => void handleSend()}>
                     Send
                 </button>
             </div>
