@@ -150,8 +150,11 @@ button:disabled { opacity: 0.5; cursor: not-allowed; }
   transition: opacity 0.2s ease, color 0.2s ease;
 }
 
-.navbar-links a:hover { opacity: 1; color: var(--brass); }
-
+.navbar-links a.active {
+  opacity: 1;
+  color: var(--brass);
+  font-weight: 600;
+}
 /* ============================================
    CHATBOT
    ============================================ */

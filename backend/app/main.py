@@ -5,10 +5,13 @@ from database import Base, engine
 from models import company as company_model, job as job_model, users as user_model
 from routers import auth, chat, company, job,rag
 
-app=FastAPI()
+app = FastAPI()
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=[
+        "http://localhost:5173",
+        "http://127.0.0.1:5173",
+    ],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
