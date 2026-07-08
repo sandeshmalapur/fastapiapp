@@ -1,14 +1,15 @@
 import os
 from dotenv import load_dotenv
-from jose import jwt
+from jose import jwt, JWTError
 from datetime import datetime, timedelta
-from models import users
-from sqlalchemy.orm import Session
+from models.users import User
+from sqlalchemy.future import select
+from sqlalchemy.ext.asyncio import AsyncSession
 from fastapi import HTTPException
 
 load_dotenv()
-SECRET_KEY = os.getenv("SECRET_KEY")
-ALGORITHM = os.getenv("ALGORITHM")
+SECRET_KEY = os.getenv("SECRET_KEY", "change-me")
+ALGORITHM = os.getenv("ALGORITHM", "HS256")
 
 def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=2)):
     to_encode = data.copy()
@@ -17,9 +18,17 @@ def create_access_token(data: dict, expires_delta: timedelta = timedelta(hours=2
     encoded_jwt = jwt.encode(to_encode, key=SECRET_KEY, algorithm=ALGORITHM)
     return encoded_jwt
 
-def verify_access_token(token: str, db: Session):
-    to_decode = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
-    current_user = db.query(users.User).filter(users.User.id == to_decode.get("user_id")).first()
+async def verify_access_token(token: str, db: AsyncSession):
+    try:
+        payload = jwt.decode(token, key=SECRET_KEY, algorithms=[ALGORITHM])
+        user_id = payload.get("sub") or payload.get("user_id")
+        if user_id is None:
+            raise HTTPException(status_code=401, detail="Invalid credentials")
+    except JWTError:
+        raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    result = await db.execute(select(User).filter(User.id == int(user_id)))
+    current_user = result.scalars().first()
     if current_user is None:
         raise HTTPException(status_code=401, detail="Invalid credentials")
     return current_user

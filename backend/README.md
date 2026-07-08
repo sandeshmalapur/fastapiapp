@@ -146,3 +146,19 @@ data->response
 with rag
 user query->embed done by embeddings model->vector->semantic search done by qdrantdb (vector db)->retrieve relevant chunks->construct prompt->combined text + query->
 ->llm->response
+
+Before Deployment checklist
+.env configured
+on startup create all tables in db
+async await in every api and function and session handling for all
+apis
+exception handling for all apis->
+1. resource not found
+2. internal server error
+3. bad request
+4. unauthorized
+5. forbidden
+6.validation error
+7.email already exists
+8. password incorrect
+9. company not found
